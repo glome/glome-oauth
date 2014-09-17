@@ -1,4 +1,5 @@
-class Oauth2Controller < ApplicationController
+
+class Oauth2Controller < ActionController::Base 
 
   def invalid_request
     render template: "oauth2/invalid_request"
@@ -12,15 +13,15 @@ class Oauth2Controller < ApplicationController
     password = "ZeiChey0chatie9ohsah"
     grant_type = "password"
 
-    Rails.logger.info "GRANT"
     email = app_name + "@example.com"
     user = User.new(:email => email, :password=> password)
+    #user = Gms::Account.new(:name => email, :password=>password)
     user.save
     u = User.find_by_email(email)
     application = Doorkeeper::Application.new(name: app_name, redirect_uri: params[:redirect_uri])
     r = application.save
 
-    @authorization_url = "http://127.0.0.1:3000/oauth/token"
+    @authorization_url = request.protocol() + request.host_with_port() + "/oauth/token"
     @client_id = application.uid
     @redirect_uri = redirect_uri
     @client_secret = application.secret
