@@ -22,13 +22,8 @@
     <% end %>
   </div>
   <div class="inline_block">
-    <%= form_for @authorization, :as => :authorization, :url => @redirect_uri, :method => :delete do |f| %>
-      <%= f.hidden_field :client_id %>
-      <%= f.hidden_field :redirect_uri %>
-      <%= f.hidden_field :state %>
-      <%= f.hidden_field :response_type %>
-      <%= f.hidden_field :scope %>
-      <%= f.submit "Deny", :class => "btn" %>
+      <%= form_tag( @redirect_url, { :method => :post }) do%>
+      <%= submit_tag( "Deny", :class => "btn" ) %>	
     <% end %>
   </div>
 </div>

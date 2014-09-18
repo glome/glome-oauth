@@ -14,10 +14,10 @@ class Oauth2Controller < ActionController::Base
     grant_type = "password"
 
     email = app_name + "@example.com"
-    user = User.new(:email => email, :password=> password)
+    user = FakeOauth2User.new(:email => email, :password=> password)
     #user = Gms::Account.new(:name => email, :password=>password)
     user.save
-    u = User.find_by_email(email)
+    u = FakeOauth2User.find_by_email(email)
     application = Doorkeeper::Application.new(name: app_name, redirect_uri: params[:redirect_uri])
     r = application.save
 
