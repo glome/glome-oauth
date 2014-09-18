@@ -7,7 +7,7 @@ Doorkeeper.configure do
     elsif (params.has_key?(:client_id))
       username = params[:client_id] + "example.com"
     end  
-    User.find_for_database_authentication(:email => username) 
+    u = FakeOauth2User.find_by_email(username)
   end
   #skip_authorization do
   #  true
@@ -25,8 +25,12 @@ Doorkeeper.configure do
   # end
 
   resource_owner_from_credentials do
-    u = User.find_for_database_authentication(:email => params[:username])
-    u if u && u.valid_password?(params[:password])
+    if (params.has_key?(:username))
+      username = params[:username]
+    elsif (params.has_key?(:client_id))
+      username = params[:client_id] + "example.com"
+    end  
+    u = FakeOauth2User.find_by_email(username)
   end
 
   # Access token expiration time (default 2 hours)
