@@ -4,4 +4,4 @@
 
 require File.expand_path('../config/application', __FILE__)
 
-DoorkeeperProvider::Application.load_tasks
+GlomeOauth::Application.load_tasks
