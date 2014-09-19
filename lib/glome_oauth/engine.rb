@@ -1,5 +1,5 @@
-module GlomeOauth2
+module GlomeOauth
   class Engine < ::Rails::Engine
-    isolate_namespace GlomeOauth2
+    isolate_namespace GlomeOauth
   end
 end
