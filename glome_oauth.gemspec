@@ -15,6 +15,8 @@ Gem::Specification.new do |s|
   
   s.add_dependency "rails", "~> 4.0.3"
   s.add_dependency "doorkeeper", "1.4.0"
+  s.add_dependency "redcarpet", "2.0.0b5"
+  s.add_dependency "coderay", "1.1.0"
   s.add_development_dependency "sqlite3"
 end
 

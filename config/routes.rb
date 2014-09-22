@@ -1,4 +1,4 @@
-GlomeOauth::Application.routes.draw do
+GlomeOauth::Engine.routes.draw do
   use_doorkeeper
  
   get "/oauth2" => "oauth2#grant"
