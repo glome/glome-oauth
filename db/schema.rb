@@ -74,22 +74,4 @@ ActiveRecord::Schema.define(version: 20140918095215) do
 
   add_index "oauth_applications", ["uid"], name: "index_oauth_applications_on_uid", unique: true
 
-  create_table "profiles", force: true do |t|
-    t.string   "name"
-    t.string   "email"
-    t.string   "username"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "users", force: true do |t|
-    t.string   "email",                           default: "", null: false
-    t.string   "encrypted_password",  limit: 128, default: "", null: false
-    t.datetime "remember_created_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "users", ["email"], name: "index_users_on_email", unique: true
-
 end
