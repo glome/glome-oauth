@@ -16,9 +16,10 @@
       <%= submit_tag( "Authorize", :class => "btn btn-success" ) %>	
       <input type="hidden" name="client_id" value="<%= @client_id %>" />
       <input type="hidden" name="client_secret" value="<%= @client_secret %>" />
-      <input type="hidden" name="grant_type" value="<%= @grant_type %>" />
+      <input type="hidden" name="<%= @resp_type %>" value="<%= @grant_type %>" />	
       <input type="hidden" name="username" value="<%= @username %>" />
       <input type="hidden" name="password" value="<%= @password %>" />
+      <input type="hidden" name="redirect_uri" value="<%= @redirect_uri %>" />
     <% end %>
   </div>
   <div class="inline_block">
