@@ -55,11 +55,12 @@ On the right side, select OAuth2 configuration:
  To test token, request http://glome.nemein.net/auth/oauth/token/info.
  Request should send token in header:
 
-    'Authorization: Bearer __TOKEN__ 
+    Authorization: Bearer <token>
     
  Google's playground include this one by default.
 
  Returned 200 http status code - user is authorized.
+
  401 - unathorized.
 
  
