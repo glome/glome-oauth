@@ -1,12 +1,22 @@
-## Instalation
+## Glome-server notes
 
-    git clone git@github.com:glome/glome-oauth.git
-    cd glome-oauth
-    bundle install
-    bundle exec rake db:setup
-    
-    rails server
+ Add glome\_oauth gem to Gemfile
 
+    gem 'glome_oauth', path: "./glome_oauth"
+
+ Mount engine (routes.rb)
+
+    mount GlomeOauth::Engine, at: "/auth", :as => 'auth'
+
+ Install migrations
+
+    rake glome_oauth:install:migrations
+
+ Run migrations
+
+    rake db:migrate 
+
+  
 ## Code authorization 
 
 This is the most common way to authorize with OAuth2 provider. It DOES NOT work.
