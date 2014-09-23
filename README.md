@@ -4,7 +4,11 @@
 
     gem 'glome_oauth', path: "./glome_oauth"
 
- Mount engine (routes.rb)
+ Mount glome\_oauth and doorkeeper (routes.rb)
+
+    scope 'auth' do
+       use_doorkeeper
+    end
 
     mount GlomeOauth::Engine, at: "/auth", :as => 'auth'
 
