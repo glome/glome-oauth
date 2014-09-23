@@ -29,12 +29,19 @@ On the left side, define own scope. Might be 'public' or anything.
 On the right side, select OAuth2 configuration:
 
  OAuth flow: server-side
+
  OAuth endpoints: custom
+
  Authorization endpoint: http://glome.nemein.net/auth/oauth2
+
  Token endpoint: http://glome.nemein.net/auth/oauth/token
+
  Access token location: keep default with Bearer
+
  OAuth Client ID: any unique identifier
+
  OAuth Client secret: Zi1taishurooGhaye7BeeB8phiey2u
+
  (client secret might be any unique secret, if only client send this info in request. Google does not.)
 
  Authorize API's
@@ -46,7 +53,11 @@ On the right side, select OAuth2 configuration:
  Access and refresh tokens are returned.
 
  To test token, request http://glome.nemein.net/auth/oauth/token/info.
- Proper 'Authorization: Bearer __TOKEN__ should be included in header. Google's playground include this one by default.
+ Request should send token in header:
+
+    'Authorization: Bearer __TOKEN__ 
+    
+ Google's playground include this one by default.
 
  Returned 200 http status code - user is authorized.
  401 - unathorized.
