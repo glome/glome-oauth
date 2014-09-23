@@ -5,8 +5,6 @@ gem 'jquery-rails'
 gem 'doorkeeper', '1.4.0'
 gem 'faker'
 
-gem 'gms', '>= 0.0.1'
-
 gem 'coderay', '~> 0.9.8'
 gem 'redcarpet', '2.0.0b5'
 
