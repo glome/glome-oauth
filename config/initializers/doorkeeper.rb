@@ -37,6 +37,10 @@ Doorkeeper.configure do
   # access_token_expires_in 2.hours
   access_token_expires_in 2.weeks
 
+  # set wildcard as true
+  # the case is to match urls if GET parameters (like state) are appended by the client
+  wildcard_redirect_uri true
+
   # Issue access tokens with refresh token (disabled by default)
   use_refresh_token
 
