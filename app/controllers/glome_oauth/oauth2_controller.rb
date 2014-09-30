@@ -27,13 +27,17 @@ module GlomeOauth
       user.save
       u = FakeOauth2User.find_by_email(email)
 
+      application = FakeOauth2Application.find_by_uid(app_name)
+      
       begin
-        application = FakeOauth2Application.find_or_create_by(name: app_name, uid: app_name, secret: client_secret)
-        application.redirect_uri = params[:redirect_uri]
-        application.save
+        application = FakeOauth2Application.new(name: app_name, redirect_uri: params[:redirect_uri], uid: app_name, secret: client_secret) if application.nil?
+        r = application.save
       rescue => e
         Rails.logger.error 'ERROR: ' + e.inspect
       end
+      
+      application.redirect_uri = params[:redirect_uri]
+      application.save
 
       @authorization_url = request.protocol() + request.host_with_port() + "/auth/oauth/authorize"
       @client_id = application.uid
