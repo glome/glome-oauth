@@ -1,0 +1,24 @@
+glome_api:
+    resource: "@GlomeApiBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+NelmioApiDocBundle:
+  resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
+  prefix:   /api/doc
+
+   # app/config/routing.yml
+    fos_oauth_server_token:
+        resource: "@FOSOAuthServerBundle/Resources/config/routing/token.xml"
+
+    fos_oauth_server_authorize:
+        resource: "@FOSOAuthServerBundle/Resources/config/routing/authorize.xml"
+
+    acme_oauth_server_auth_login:
+        pattern:  /oauth/v2/auth_login
+        defaults: { _controller: GlomeApiBundle:Security:login }
+
+    acme_oauth_server_auth_login_check:
+        pattern:  /oauth/v2/auth_login_check
+        defaults: { _controller: GlomeApiBundle:Security:loginCheck }
+
