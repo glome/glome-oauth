@@ -1,0 +1,3 @@
+glome_api:
+    resource: "@GlomeApiBundle/Controller"
+    type:     annotation

@@ -1,0 +1,7 @@
+parameters:
+#    glome_api.example.class: Glome\ApiBundle\Example
+
+services:
+#    glome_api.example:
+#        class: %glome_api.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
