@@ -3,11 +3,13 @@ glome_api:
     type:     annotation
     prefix:   /
 
+glome_services:
+    resource: "@GlomeApiBundle/Resources/config/routing/services.yml"
+
+
 NelmioApiDocBundle:
   resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
   prefix:   /api/doc
-
-
 
 
 # FOS OAuth Server
