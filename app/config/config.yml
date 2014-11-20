@@ -109,6 +109,13 @@ fos_http_cache:
                     last_modified: "-1 hour"
                     vary: [Accept-Encoding, Accept-Language]
 
+# fos_user:
+#     db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
+#     firewall_name: main
+#     user_class: Glome\ApiBundle\Entity\User
+#     service:
+#         user_manager: glome_api.user.manager
+
 # app/config/config.yml
 fos_oauth_server:
     db_driver: orm
@@ -117,6 +124,6 @@ fos_oauth_server:
     refresh_token_class: Glome\ApiBundle\Entity\RefreshToken
     auth_code_class:     Glome\ApiBundle\Entity\AuthCode
     service:
-        user_provider: glome.user.provider
+        user_provider: glome_api.user.provider
         options:
             supported_scopes: user

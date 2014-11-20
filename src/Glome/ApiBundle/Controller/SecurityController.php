@@ -1,8 +1,6 @@
 <?php
 namespace Glome\ApiBundle\Controller;
 
-
-
 use FOS\RestBundle\Controller\FOSRestController;
 use Glome\ApiBundle\Entity\User;
 
@@ -29,10 +27,8 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
 use GuzzleHttp\Client;
 use FOS\OAuthServerBundle\FOSOAuthServerBundle;
-use Glome\ApiBundle\Entity\GlomeAuthenicationUser;
+use Glome\ApiBundle\Entity\GlomeAuthenticationUser;
 use Symfony\Component\Security\Core\SecurityContext;
-
-
 
 
 class SecurityController extends Controller
@@ -71,7 +67,6 @@ class SecurityController extends Controller
 
     }
 
-
     /**
      *  @Route("/api/glomelogin", name="/api/glomelogin")
      *  @Method({"GET","POST"})
@@ -92,7 +87,7 @@ class SecurityController extends Controller
         }
 
         // create a task and give it some dummy data for this example
-        $user = new GlomeAuthenicationUser();
+        $user = new GlomeAuthenticationUser();
 
         $form = $this->createFormBuilder($user)
             ->add('glomeid', 'text')
@@ -103,7 +98,6 @@ class SecurityController extends Controller
         return $this->render('GlomeApiBundle:Glome:index.html.twig', array(
             'form' => $form->createView(),
         ));
-
 
         /*
         $res = $client->get('https://api.github.com/user', ['auth' =>  ['user', 'pass']]);
@@ -122,9 +116,7 @@ class SecurityController extends Controller
             echo 'I completed! ' . $response;
         });
         */
-
     }
-
 
     /**
      *  @Route("/api/glomeLoginCheck", name="/api/glomeLoginCheck")
@@ -165,8 +157,5 @@ class SecurityController extends Controller
             echo 'I completed! ' . $response;
         });
         */
-
     }
-
-
 }
