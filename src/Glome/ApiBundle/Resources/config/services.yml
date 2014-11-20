@@ -1,0 +1,24 @@
+parameters:
+#    glome_api.example.class: Glome\ApiBundle\Example
+    glome_api.entity.user.class: Glome\ApiBundle\Entity\User
+    glome_api.user.provider.class: Glome\ApiBundle\Provider\UserProvider
+
+services:
+#    glome_api.example:
+#        class: %glome_api.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
+    glome_api.user.manager:
+        class: Doctrine\ORM\EntityManager
+        factory_service: doctrine
+        factory_method: getManagerForClass
+        arguments: ["%glome_api.entity.user.class%"]
+
+    glome_api.user.repository:
+        class: Glome\ApiBundle\Entity\UserRepository
+        factory_service: glome_api.user.manager
+        factory_method: getRepository
+        arguments: ["%glome_api.entity.user.class%"]
+
+    glome_api.user.provider:
+        class: "%glome_api.user.provider.class%"
+        arguments: ["@glome_api.user.repository"]

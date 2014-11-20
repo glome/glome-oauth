@@ -1,12 +1,14 @@
+# Glome API - OAuth2 middleware
 glome_api:
     resource: "@GlomeApiBundle/Controller/"
     type:     annotation
     prefix:   /
 
 glome_services:
-    resource: "@GlomeApiBundle/Resources/config/routing/services.yml"
+    resource: "@GlomeApiBundle/Resources/config/routing.yml"
 
 
+# Nelmio API doc bundle
 NelmioApiDocBundle:
   resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
   prefix:   /api/doc
