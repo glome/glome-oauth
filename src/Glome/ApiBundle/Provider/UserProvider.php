@@ -8,54 +8,64 @@
   use Doctrine\Common\Persistence\ObjectRepository;
   use Doctrine\ORM\NoResultException;
 
-  class UserProvider implements UserProviderInterface
+  use Symfony\Component\Security\Core\User\InMemoryUserProvider;
+
+  # class UserProvider implements UserProviderInterface
+  class UserProvider extends InMemoryUserProvider
   {
-      protected $userRepository;
+    public function __construct(array $users = array()) {
+      parent::__construct($users);
+      // $this->userRepository = $userRepository;
+    }
 
-      public function __construct(ObjectRepository $userRepository) {
-          $this->userRepository = $userRepository;
-      }
+    /*
+    protected $userRepository;
 
-      public function loadUserByUsername($username)
-      {
-          $q = $this->userRepository
-              ->createQueryBuilder('u')
-              ->where('u.username = :username OR u.email = :email')
-              ->setParameter('username', $username)
-              ->setParameter('email', $username)
-              ->getQuery();
+    public function __construct(ObjectRepository $userRepository) {
+        $this->userRepository = $userRepository;
+    }
 
-          try {
-              $user = $q->getSingleResult();
-          } catch (NoResultException $e) {
-              $message = sprintf(
-                  'Unable to find an active admin GlomeApiBundle:User object identified by "%s".',
-                  $username
-              );
-              throw new UsernameNotFoundException($message, 0, $e);
-          }
+    public function loadUserByUsername($username)
+    {
+        $q = $this->userRepository
+            ->createQueryBuilder('u')
+            ->where('u.username = :username OR u.email = :email')
+            ->setParameter('username', $username)
+            ->setParameter('email', $username)
+            ->getQuery();
 
-          return $user;
-      }
+        try {
+            $user = $q->getSingleResult();
+        } catch (NoResultException $e) {
+            $message = sprintf(
+                'Unable to find an active admin GlomeApiBundle:User object identified by "%s".',
+                $username
+            );
+            throw new UsernameNotFoundException($message, 0, $e);
+        }
 
-      public function refreshUser(UserInterface $user)
-      {
-          $class = get_class($user);
-          if (!$this->supportsClass($class)) {
-              throw new UnsupportedUserException(
-                  sprintf(
-                      'Instances of "%s" are not supported.',
-                      $class
-                  )
-              );
-          }
+        return $user;
+    }
 
-          return $this->userRepository->find($user->getId());
-      }
+    public function refreshUser(UserInterface $user)
+    {
+        $class = get_class($user);
+        if (!$this->supportsClass($class)) {
+            throw new UnsupportedUserException(
+                sprintf(
+                    'Instances of "%s" are not supported.',
+                    $class
+                )
+            );
+        }
 
-      public function supportsClass($class)
-      {
-          return $this->userRepository->getClassName() === $class
-          || is_subclass_of($class, $this->userRepository->getClassName());
-      }
+        return $this->userRepository->find($user->getId());
+    }
+
+    public function supportsClass($class)
+    {
+        return $this->userRepository->getClassName() === $class
+        || is_subclass_of($class, $this->userRepository->getClassName());
+    }
+    */
   }

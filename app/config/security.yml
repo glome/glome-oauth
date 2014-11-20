@@ -7,7 +7,7 @@ security:
         # in_memory:
         #     memory:
         #         users:
-        #             restapi:  { password: secretpw, roles: [ 'ROLE_API' ] }
+        #             restapi:  { password: secretpw2, roles: [ 'ROLE_API' ] }
         user_provider:
             id: glome_api.user.provider
 

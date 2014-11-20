@@ -125,5 +125,6 @@ fos_oauth_server:
     auth_code_class:     Glome\ApiBundle\Entity\AuthCode
     service:
         user_provider: glome_api.user.provider
+        auth_code_manager: glome_api.auth_code_manager
         options:
             supported_scopes: user
