@@ -5,8 +5,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
-* Acme\UserBundle\Entity\User
-*
 * @ORM\Table(name="user")
 * @ORM\Entity(repositoryClass="Glome\ApiBundle\Entity\UserRepository")
 */

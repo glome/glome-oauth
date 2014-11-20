@@ -25,7 +25,7 @@ class AuthCode extends BaseAuthCode
     protected $client;
 
     /**
-     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\ManyToOne(targetEntity="Glome\ApiBundle\Entity\User")
      */
     protected $user;
 }
