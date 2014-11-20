@@ -2,13 +2,14 @@ security:
     encoders:
         Glome\ApiBundle\Entity\User: sha512
         Symfony\Component\Security\Core\User\User: plaintext
-        #FOS\UserBundle\Model\UserInterface: sha512
 
     providers:
-        in_memory:
-            memory:
-                users:
-                    restapi:  { password: secretpw, roles: [ 'ROLE_API' ] }
+        # in_memory:
+        #     memory:
+        #         users:
+        #             restapi:  { password: secretpw, roles: [ 'ROLE_API' ] }
+        user_provider:
+            id: glome_api.user.provider
 
     firewalls:
         dev:
