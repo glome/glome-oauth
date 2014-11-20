@@ -1,0 +1,13 @@
+<h2>The application  would like to connect to your account</h2>
+
+<form action="{{ path('/api/oauth/auth') }}" method="POST" class="/api/oauth/auth" {{ form_enctype(form) }}>
+    <input class="btn" type="submit" name="rejected" value="{{ 'authorize.reject'|trans({}, 'GlomeApiBundle') }}" />
+    <input class="btn btn-primary" type="submit" name="accepted" value="{{ 'authorize.accept'|trans({}, 'GlomeApiBundle') }}" />
+
+    {{ form_row(form.client_id) }}
+    {{ form_row(form.response_type) }}
+    {{ form_row(form.redirect_uri) }}
+    {{ form_row(form.state) }}
+    {{ form_row(form.scope) }}
+    {{ form_rest(form) }}
+</form>

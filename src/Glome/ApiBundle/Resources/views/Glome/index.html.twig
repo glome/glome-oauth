@@ -1,0 +1,8 @@
+{{ form_start(form) }}
+    {{ form_errors(form) }}
+
+    {{ form_row(form.glomeid) }}
+    {{ form_row(form.password) }}
+
+    {{ form_row(form.save, { 'label': 'Submit me' }) }}
+{{ form_end(form) }}
