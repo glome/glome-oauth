@@ -5,6 +5,9 @@
   use FOS\OAuthServerBundle\Model\AuthCodeInterface;
   use FOS\OAuthServerBundle\Model\AuthCodeManager as BaseAuthCodeManager;
 
+  use Glome\ApiBundle\Entity\User;
+  use Glome\ApiBundle\Entity\UserRepository;
+
   class AuthCodeManager extends BaseAuthCodeManager
   {
     /**
@@ -54,7 +57,25 @@
      */
     public function updateAuthCode(AuthCodeInterface $authCode)
     {
-      $authCode->setUser(null);
+      // Extract core User from AuthCode
+      $leUser = $authCode->getUser();
+
+      // Check if a matching gateway user is found
+      $userRepo = $this->em->getRepository('Glome\ApiBundle\Entity\User');
+      $user = $userRepo->findOneBy(array('username' => $leUser->getUsername()));
+
+      // If not found, store this
+      if (!$user) {
+        $user = new User();
+        $user->setUsername($leUser->getUsername());
+        $user->setSalt($leUser->getSalt());
+        $user->setPassword($leUser->getPassword());
+        $this->em->persist($user);
+      }
+
+      // Set bundle User to AuthCode
+      $authCode->setUser($user);
+
       $this->em->persist($authCode);
       $this->em->flush();
     }
@@ -80,5 +101,9 @@
         ->setParameters(array(1 => time()));
 
       return $qb->getQuery()->execute();
+    }
+
+    public function persist(AuthCode $authCode) {
+      parent::persist($authCode);
     }
   }

@@ -7,7 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Glome\ApiBundle\Entity\User as User;
 
 /**
- * @ORM\Entity
+ * @ORM\Table(name="authcode")
+ * @ORM\Entity(repositoryClass="Glome\ApiBundle\Entity\AuthCodeRepository")
  */
 class AuthCode extends BaseAuthCode
 {
@@ -25,9 +26,7 @@ class AuthCode extends BaseAuthCode
     protected $client;
 
     /**
-     * #ORM\ManyToOne(targetEntity="Glome\ApiBundle\Entity\User")
-     *
-     * @ORM\Column(type="integer")
+     * @ORM\ManyToOne(targetEntity="Glome\ApiBundle\Entity\User")
      */
     protected $user;
 }

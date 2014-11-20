@@ -5,7 +5,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
-* @ORM\Table(name="user")
+* @ORM\Table(name="gateway_user")
 * @ORM\Entity(repositoryClass="Glome\ApiBundle\Entity\UserRepository")
 */
 class User implements UserInterface, \Serializable
@@ -28,7 +28,7 @@ class User implements UserInterface, \Serializable
   private $email;
 
   /**
-  * @ORM\Column(type="string", length=32)
+  * @ORM\Column(type="string", length=32, nullable=true)
   */
   private $salt;
 
