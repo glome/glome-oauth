@@ -15,6 +15,8 @@ parameters:
     glome_api.auth_code_manager.class: Glome\ApiBundle\Entity\AuthCodeManager
     glome_api.auth_code.class: Glome\ApiBundle\Entity\AuthCode
 
+    glome_api.oauth.server.class: Glome\ApiBundle\Lib\GlomeOAuth2
+
 services:
 #    glome_api.example:
 #        class: %glome_api.example.class%
@@ -49,4 +51,8 @@ services:
 
     glome_api.token.controller:
         class: "%glome_api.token.controller.class%"
-        arguments: ["@fos_oauth_server.server"]
+        arguments: ["@glome_api.oauth.server"]
+
+    glome_api.oauth.server:
+        class: "%glome_api.oauth.server.class%"
+        arguments: ["@fos_oauth_server.storage", "%fos_oauth_server.server.options%"]

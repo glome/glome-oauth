@@ -12,7 +12,7 @@
 namespace Glome\ApiBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
-use OAuth2\OAuth2;
+use Glome\ApiBundle\Lib\GlomeOAuth2 as OAuth2;
 use OAuth2\OAuth2ServerException;
 use FOS\OAuthServerBundle\Controller\TokenController as TokenBase;
 
