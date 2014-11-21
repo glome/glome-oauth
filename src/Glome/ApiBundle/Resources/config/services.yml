@@ -4,6 +4,7 @@ parameters:
 #     glome_api.entity.user.class: Glome\ApiBundle\Entity\User
     glome_api.entity.user.class: Symfony\Component\Security\Core\User\User
     glome_api.user.provider.class: Glome\ApiBundle\Provider\UserProvider
+    glome_api.token.controller.class: Glome\ApiBundle\Controller\TokenController
 
     glome_api.users:
       restapi:
@@ -45,3 +46,6 @@ services:
     glome_api.auth_code_manager:
         class: "%glome_api.auth_code_manager.class%"
         arguments: ["@glome_api.auth_code.manager", "%glome_api.auth_code.class%"]
+
+    glome_api.token.controller:
+        class: "%glome_api.token.controller.class%"

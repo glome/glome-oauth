@@ -27,7 +27,7 @@
 
     /**
      * Set Client object.
-     * @param $password
+     * @param $glomeid
      * @return self
      */
     public function setGlomeId($glomeid) {
