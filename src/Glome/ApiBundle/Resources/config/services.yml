@@ -49,3 +49,4 @@ services:
 
     glome_api.token.controller:
         class: "%glome_api.token.controller.class%"
+        arguments: ["@fos_oauth_server.server"]
