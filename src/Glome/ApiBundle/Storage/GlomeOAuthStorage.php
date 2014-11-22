@@ -55,7 +55,6 @@
       public function __construct(ClientManagerInterface $clientManager, AccessTokenManagerInterface $accessTokenManager,
                                   RefreshTokenManagerInterface $refreshTokenManager, AuthCodeManagerInterface $authCodeManager,
                                   UserProviderInterface $userProvider = null, EncoderFactoryInterface $encoderFactory = null,
-                                  UserManager $userManager = null,
                                   EntityManager $em = null) {
           parent::__construct(
               $clientManager,
@@ -63,10 +62,10 @@
               $refreshTokenManager,
               $authCodeManager,
               $userProvider,
-              $encoderFactory,
-              $userManager);
+              $encoderFactory);
 
           $this->em = $em;
+
       }
       public function createAccessToken($tokenString, IOAuth2Client $client, $data, $expires, $scope = null)
       {
@@ -139,14 +138,15 @@
               }
 
               $userRepo = $this->em->getRepository('Glome\ApiBundle\Entity\User');
-              //$user = $userRepo->findOneBy(array(‘id' => $leUser->getId()));
+              $userRepoEntity = $userRepo->findOneBy(array('username' => $user->json()['glomeid']));
 
-              $userEntity = new User();
+              if ($userRepoEntity->getId() == null) {
+                  $userRepoEntity = new User();
 
-              $userEntity->setUsername($user->json()['glomeid']);
-              //$user->json()['password']
-              $userEntity->setPassword("glome");
-
+                  $userRepoEntity->setUsername($user->json()['glomeid']);
+                  //$user->json()['password']
+                  $userRepoEntity->setPassword("glome");
+              }
 
           } catch (AuthenticationException $e) {
                   return false;
@@ -154,7 +154,7 @@
 
           if (null !== $user->json()) {
                   return array(
-                      'data' => $userEntity,
+                      'data' => $userRepoEntity,
                   );
           }
 

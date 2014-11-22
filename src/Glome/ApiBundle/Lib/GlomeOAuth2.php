@@ -50,6 +50,22 @@ use Glome\ApiBundle\Controller\SecurityController;
  */
 class GlomeOAuth2 extends OAuth2{
 
+    /**
+     * Returns HTTP headers for JSON.
+     *
+     * @see http://tools.ietf.org/html/draft-ietf-oauth-v2-20#section-5.1
+     * @see http://tools.ietf.org/html/draft-ietf-oauth-v2-20#section-5.2
+     *
+     * @ingroup oauth2_section_5
+     */
+    public function getJsonHeaders() {
+        return array(
+            'Content-Type' => 'application/json',
+            'Cache-Control' => 'no-store',
+            'Pragma' => 'no-cache',
+        );
+    }
+    
     // Access token granting (Section 4).
 
     /**
