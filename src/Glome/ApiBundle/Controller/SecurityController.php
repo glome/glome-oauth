@@ -30,10 +30,42 @@ use FOS\OAuthServerBundle\FOSOAuthServerBundle;
 use Glome\ApiBundle\Entity\GlomeAuthenticationUser;
 use Symfony\Component\Security\Core\SecurityContext;
 
-
-class SecurityController extends Controller
+class SecurityController extends FOSRestController
 {
-    public function loginAction(Request $request)
+  /**
+   * Default route.
+   *
+   * @Route("/")
+   * @Method({"GET"})
+   *
+   * @return Response
+   */
+  public function indexAction($name)
+    {
+      return $this->render('GlomeApiBundle:Default:index.html.twig', array('name' => $name));
+    }
+
+  /**
+   * Login.
+   *
+   * @Route("/api/login")
+   * @Method({"GET", "POST"})
+   *
+   * @param Request $request
+   *
+   * @ApiDoc(
+   *  section="System",
+   *  description="Login a User",
+   *  statusCodes={
+   *    200="Success",
+   *    403="Access denied",
+   *    404="User not found"
+   *  }
+   * )
+   *
+   * @return Response
+   */
+  public function loginAction(Request $request)
     {
         $session = $request->getSession();
 
@@ -68,8 +100,20 @@ class SecurityController extends Controller
     }
 
     /**
-     *  @Route("/api/glomelogin", name="/api/glomelogin")
-     *  @Method({"GET","POST"})
+     * Login Glome user.
+     *
+     * @Route("/api/glomelogin", name="/api/glomelogin")
+     * @Method({"GET","POST"})
+     *
+     * @ApiDoc(
+     *  section="Glome",
+     *  description="Login Glome user",
+     *  statusCodes={
+     *    200="Success",
+     *    403="Access denied",
+     *    404="User not found"
+     *  }
+     * )
      */
     public function glomeLoginAction(Request $request)
     {
