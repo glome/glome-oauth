@@ -48,6 +48,10 @@ class User implements UserInterface, \Serializable
       $this->salt = md5(uniqid(null, true));
   }
 
+    public function setId($id){
+        $this->id = $id;
+    }
+
   public function getId(){
       return $this->id;
   }

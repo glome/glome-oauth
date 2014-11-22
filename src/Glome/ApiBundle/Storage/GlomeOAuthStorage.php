@@ -96,7 +96,6 @@
           */
 
           // TODO: Use fixture and not entity.
-          $userEntity = new User();
           $client = new Client();
 
           /*
@@ -112,8 +111,12 @@
                   throw new Exception($user);
               }
 
+              $userEntity = new User();
 
               $userEntity->setUsername($user->json()['glomeid']);
+              //$user->json()['password']
+              $userEntity->setPassword("glome");
+
 
           } catch (AuthenticationException $e) {
                   return false;
@@ -121,7 +124,7 @@
 
           if (null !== $user->json()) {
                   return array(
-                      'data' => $user->json(),
+                      'data' => $userEntity,
                   );
           }
 
