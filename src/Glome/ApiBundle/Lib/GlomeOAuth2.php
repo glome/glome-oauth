@@ -8,6 +8,7 @@ use OAuth2\Model\IOAuth2AuthCode;
 use OAuth2\OAuth2ServerException as OAuth2ServerException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Glome\ApiBundle\Controller\SecurityController;
 
 /**
  * @mainpage
@@ -195,14 +196,18 @@ class GlomeOAuth2 extends OAuth2{
     }
 
     protected function grantAccessTokenUserCredentials(IOAuth2Client $client, array $input) {
+        /*
+         * N/A
         if (!($this->storage instanceof IOAuth2GrantUser)) {
             throw new OAuth2ServerException(self::HTTP_BAD_REQUEST, self::ERROR_UNSUPPORTED_GRANT_TYPE);
         }
-
+        */
         if (!$input["username"] || !$input["password"]) {
-            throw new OAuth2ServerException(self::HTTP_BAD_REQUEST, self::ERROR_INVALID_REQUEST, 'Missing parameters. "username" and "password" required');
+            //throw new OAuth2ServerException(self::HTTP_BAD_REQUEST, self::ERROR_INVALID_REQUEST, 'Missing parameters. "username" and "password" required');
+
         }
 
+        // TODO: Documentation
         $stored = $this->storage->checkUserCredentials($client, $input["username"], $input["password"]);
 
         if ($stored === FALSE) {
