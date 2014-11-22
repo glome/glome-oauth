@@ -41,6 +41,28 @@
 
   class GlomeOAuthStorage extends OAuthStorage {
 
+      public function createAccessToken($tokenString, IOAuth2Client $client, $data, $expires, $scope = null)
+      {
+          /*
+           * N/A
+          if (!$client instanceof ClientInterface) {
+              throw new \InvalidArgumentException('Client has to implement the ClientInterface');
+          }*/
+
+          $token = $this->accessTokenManager->createToken();
+          $token->setToken($tokenString);
+          $token->setClient($client);
+          $token->setExpiresAt($expires);
+          $token->setScope($scope);
+
+          if (null !== $data) {
+              $token->setUser($data);
+          }
+
+          $this->accessTokenManager->updateToken($token);
+
+          return $token;
+      }
 
 
       /**
@@ -74,6 +96,7 @@
           */
 
           // TODO: Use fixture and not entity.
+          $userEntity = new User();
           $client = new Client();
 
           /*
@@ -89,19 +112,17 @@
                   throw new Exception($user);
               }
 
+
+              $userEntity->setUsername($user->json()['glomeid']);
+
           } catch (AuthenticationException $e) {
                   return false;
           }
 
           if (null !== $user->json()) {
-              var_export($user->json());
-              $encoder = $this->encoderFactory->getEncoder($user);
-
-              if ($encoder->isPasswordValid($user->getPassword(), $password, $user->getSalt())) {
                   return array(
-                      'data' => $user,
+                      'data' => $user->json(),
                   );
-              }
           }
 
           return false;
