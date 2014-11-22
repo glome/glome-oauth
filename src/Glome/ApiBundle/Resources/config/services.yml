@@ -13,6 +13,8 @@ parameters:
               - 'ROLE_API'
 
     glome_api.auth_code_manager.class: Glome\ApiBundle\Entity\AuthCodeManager
+
+    glome_api.user.class: Glome\ApiBundle\Entity\User
     glome_api.auth_code.class: Glome\ApiBundle\Entity\AuthCode
 
     glome_api.oauth.storage.class: Glome\ApiBundle\Storage\GlomeOAuthStorage
@@ -46,6 +48,12 @@ services:
         factory_method: getManagerForClass
         arguments: ["%glome_api.auth_code.class%"]
 
+    glome_api.user.manager:
+        class: Doctrine\ORM\EntityManager
+        factory_service: doctrine
+        factory_method: getManagerForClass
+        arguments: ["%glome_api.entity.user.class%"]
+
     glome_api.auth_code_manager:
         class: "%glome_api.auth_code_manager.class%"
         arguments: ["@glome_api.auth_code.manager", "%glome_api.auth_code.class%"]
@@ -64,6 +72,7 @@ services:
             - "@fos_oauth_server.auth_code_manager"
             - "@?fos_oauth_server.user_provider"
             - "@security.encoder_factory"
+            - "@glome_api.user.manager"
 
     glome_api.oauth.server:
         class: "%glome_api.oauth.server.class%"

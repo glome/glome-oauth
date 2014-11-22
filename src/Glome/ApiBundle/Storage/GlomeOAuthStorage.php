@@ -39,8 +39,35 @@
   use Symfony\Component\Security\Core\SecurityContext;
 
 
+  use FOS\OAuthServerBundle\Model\AccessTokenManagerInterface;
+  use FOS\OAuthServerBundle\Model\RefreshTokenManagerInterface;
+  use FOS\OAuthServerBundle\Model\AuthCodeManagerInterface;
+  use FOS\OAuthServerBundle\Model\ClientManagerInterface;
+  use FOS\OAuthServerBundle\Model\ClientInterface;
+  use Symfony\Component\Security\Core\User\UserProviderInterface;
+  use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
+  use Symfony\Component\Security\Core\Exception\AuthenticationException;
+  use Doctrine\ORM\EntityManager;
+
+
   class GlomeOAuthStorage extends OAuthStorage {
 
+      public function __construct(ClientManagerInterface $clientManager, AccessTokenManagerInterface $accessTokenManager,
+                                  RefreshTokenManagerInterface $refreshTokenManager, AuthCodeManagerInterface $authCodeManager,
+                                  UserProviderInterface $userProvider = null, EncoderFactoryInterface $encoderFactory = null,
+                                  UserManager $userManager = null,
+                                  EntityManager $em = null) {
+          parent::__construct(
+              $clientManager,
+              $accessTokenManager,
+              $refreshTokenManager,
+              $authCodeManager,
+              $userProvider,
+              $encoderFactory,
+              $userManager);
+
+          $this->em = $em;
+      }
       public function createAccessToken($tokenString, IOAuth2Client $client, $data, $expires, $scope = null)
       {
           /*
@@ -110,6 +137,9 @@
               if ($user->getStatusCode() != 200) {
                   throw new Exception($user);
               }
+
+              $userRepo = $this->em->getRepository('Glome\ApiBundle\Entity\User');
+              //$user = $userRepo->findOneBy(array(‘id' => $leUser->getId()));
 
               $userEntity = new User();
 
