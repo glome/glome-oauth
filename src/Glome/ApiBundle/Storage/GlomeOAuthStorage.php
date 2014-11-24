@@ -140,8 +140,10 @@
               $userRepo = $this->em->getRepository('Glome\ApiBundle\Entity\User');
               $userRepoEntity = $userRepo->findOneBy(array('username' => $user->json()['glomeid']));
 
-              if ($userRepoEntity->getId() == null) {
+              if ($userRepoEntity == null) {
+
                   $userRepoEntity = new User();
+                  $this->em->persist($userRepoEntity);
 
                   $userRepoEntity->setUsername($user->json()['glomeid']);
                   //$user->json()['password']
