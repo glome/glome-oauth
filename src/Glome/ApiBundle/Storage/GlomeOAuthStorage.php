@@ -138,9 +138,7 @@
           try {
               $loginToGlome = $this->loginGlomeUser($username,$password);
 
-              if ($loginToGlome->getStatusCode() != 200) {
-                  throw new Exception($loginToGlome);
-              }
+
               switch ($loginToGlome->getStatusCode()) {
                   case (200):
                       break;
