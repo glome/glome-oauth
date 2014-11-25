@@ -67,6 +67,7 @@
           $this->em = $em;
 
       }
+
       public function createAccessToken($tokenString, IOAuth2Client $client, $data, $expires, $scope = null)
       {
           /*
@@ -90,73 +91,91 @@
           return $token;
       }
 
+      /*
+       *  TODO: Error catching.
+       */
+      public function createGlomeUser($username, $password) {
+
+          $client = new Client();
+
+          $user = $client->post('https://stone.glome.me/users.json',
+              ['exceptions' => false, 'body' =>
+                  ['user[glomeid]' => $username,
+                      'user[password]' => $password,
+                      'user[password_confirmation]' => $password]]);
+
+          if ($user->getStatusCode() != 200) {
+              return false;
+          } else {
+              return true;
+          }
+
+
+      }
+
+      public function loginGlomeUser($username, $password) {
+
+          $client = new Client();
+
+          $user = $client->post('http://stone.glome.me/users/login.json',
+              ['exceptions' => false, 'body' =>
+                  ['user[glomeid]' => $username,
+                      'user[password]' => $password]]);
+          return $user;
+      }
 
       /**
-       *  TODO: Documentation
+       *  This function checks the user login on the glome backend-server.
+       *  Also calls a method to create a user if non existing.
+       *
        */
       public function checkUserCredentials(IOAuth2Client $client, $username, $password)
       {
-          /*
-
-          if (!$client instanceof ClientInterface) {
-              throw new \InvalidArgumentException('Client has to implement the ClientInterface');
-          }
-
-
-          try {
-              $user = $this->userProvider->loadUserByUsername($username);
-          } catch (AuthenticationException $e) {
-              return false;
-          }
-
-          if (null !== $user) {
-              $encoder = $this->encoderFactory->getEncoder($user);
-
-              if ($encoder->isPasswordValid($user->getPassword(), $password, $user->getSalt())) {
-                  return array(
-                      'data' => $user,
-                  );
-              }
-          }
-
-          */
-
-          // TODO: Use fixture and not entity.
-          $client = new Client();
 
           /*
            * Try to login Glome Backend server with credentials
            */
           try {
-              $user = $client->post('http://stone.glome.me/users/login.json',
-                  ['exceptions' => false, 'body' =>
-                      ['user[glomeid]' => $username,
-                          'user[password]' => $password]]);
+              $loginToGlome = $this->loginGlomeUser($username,$password);
 
-              if ($user->getStatusCode() != 200) {
-                  throw new Exception($user);
+              if ($loginToGlome->getStatusCode() != 200) {
+                  throw new Exception($loginToGlome);
+              }
+              switch ($loginToGlome->getStatusCode()) {
+                  case (200):
+                      break;
+
+                  case (404):
+                      if ($this->createGlomeUser($username, $password) == true) {
+                          $this->loginGlomeUser($username, $password);
+                      }
+                      break;
+
+                  default:
+                      throw new Exception($loginToGlome);
+                      break;
               }
 
               $userRepo = $this->em->getRepository('Glome\ApiBundle\Entity\User');
-              $userRepoEntity = $userRepo->findOneBy(array('username' => $user->json()['glomeid']));
+              $user = $userRepo->findOneBy(array('username' => $loginToGlome->json()['glomeid']));
 
-              if ($userRepoEntity == null) {
+              if ($user == null) {
 
-                  $userRepoEntity = new User();
-                  $this->em->persist($userRepoEntity);
+                  $user = new User();
+                  $this->em->persist($user);
 
-                  $userRepoEntity->setUsername($user->json()['glomeid']);
+                  $user->setUsername($loginToGlome->json()['glomeid']);
                   //$user->json()['password']
-                  $userRepoEntity->setPassword("glome");
+                  $user->setPassword("glome");
               }
 
           } catch (AuthenticationException $e) {
                   return false;
           }
 
-          if (null !== $user->json()) {
+          if (null !== $loginToGlome->json()) {
                   return array(
-                      'data' => $userRepoEntity,
+                      'data' => $user,
                   );
           }
 
