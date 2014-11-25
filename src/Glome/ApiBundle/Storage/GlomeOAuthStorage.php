@@ -143,9 +143,11 @@
                   case (200):
                       break;
 
-                  case (404):
+                  case (403):
                       if ($this->createGlomeUser($username, $password) == true) {
                           $this->loginGlomeUser($username, $password);
+                      } else {
+                          throw new Exception("Possibly wrong password");
                       }
                       break;
 
