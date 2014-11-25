@@ -166,7 +166,7 @@
 
                   $user->setUsername($loginToGlome->json()['glomeid']);
                   //$user->json()['password']
-                  $user->setPassword("glome");
+                  $user->setPassword($loginToGlome->json()['password']);
               }
 
           } catch (AuthenticationException $e) {
