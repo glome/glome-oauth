@@ -1,16 +1,6 @@
 <?php
   namespace Glome\ApiBundle\Storage;
 
-  use FOS\OAuthServerBundle\Storage\OAuthStorage as OAuthStorage;
-  use OAuth2\Model\IOAuth2Client;
-  use OAuth2\Model\OAuth2Client;
-  use OAuth2\Model\OAuth2AccessToken;
-
-
-  // TODO: CLEANUP
-  use FOS\RestBundle\Controller\FOSRestController;
-  use Glome\ApiBundle\Entity\User;
-
   use Symfony\Bundle\FrameworkBundle\Controller\Controller;
   use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
   use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -21,36 +11,49 @@
   use Symfony\Component\HttpFoundation\Response;
   use Symfony\Component\HttpKernel\Exception\HttpException;
   use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
+  use Symfony\Component\Security\Core\SecurityContext;
   use Symfony\Component\Security\Core\Exception\AccessDeniedException;
   use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
   use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
+  use Symfony\Component\Security\Core\User\UserProviderInterface;
+  use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
+  use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
-  use FOS\RestBundle\View\RouteRedirectView,
-      FOS\RestBundle\View\View,
-      FOS\RestBundle\Controller\Annotations\QueryParam,
-      FOS\RestBundle\Controller\Annotations\RequestParam,
-      FOS\RestBundle\Request\ParamFetcherInterface;
+  use Doctrine\ORM\EntityManager;
 
-  use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+  use FOS\RestBundle\Controller\FOSRestController,
+    FOS\RestBundle\View\RouteRedirectView,
+    FOS\RestBundle\View\View,
+    FOS\RestBundle\Controller\Annotations\QueryParam,
+    FOS\RestBundle\Controller\Annotations\RequestParam,
+    FOS\RestBundle\Request\ParamFetcherInterface;
 
-  use GuzzleHttp\Client;
   use FOS\OAuthServerBundle\FOSOAuthServerBundle;
-  use Glome\ApiBundle\Entity\GlomeAuthenticationUser;
-  use Symfony\Component\Security\Core\SecurityContext;
-
-
+  use FOS\OAuthServerBundle\Storage\OAuthStorage as OAuthStorage;
   use FOS\OAuthServerBundle\Model\AccessTokenManagerInterface;
   use FOS\OAuthServerBundle\Model\RefreshTokenManagerInterface;
   use FOS\OAuthServerBundle\Model\AuthCodeManagerInterface;
   use FOS\OAuthServerBundle\Model\ClientManagerInterface;
   use FOS\OAuthServerBundle\Model\ClientInterface;
-  use Symfony\Component\Security\Core\User\UserProviderInterface;
-  use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
-  use Symfony\Component\Security\Core\Exception\AuthenticationException;
-  use Doctrine\ORM\EntityManager;
+
+  use OAuth2\Model\IOAuth2Client;
+  use OAuth2\Model\OAuth2Client;
+  use OAuth2\Model\OAuth2AccessToken;
+
+  use GuzzleHttp\Client;
+
+  use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+
+  use Glome\ApiBundle\Entity\User;
+  use Glome\ApiBundle\Entity\GlomeAuthenticationUser;
 
   class GlomeOAuthStorage extends OAuthStorage {
-      public function __construct(
+    /**
+     * Extended constructor to offer EntityManager (em) for this controller.
+     * em is needed for reading/writing User entities.
+     */
+    public function __construct(
         ClientManagerInterface $clientManager,
         AccessTokenManagerInterface $accessTokenManager,
         RefreshTokenManagerInterface $refreshTokenManager,
@@ -70,7 +73,10 @@
           $this->em = $em;
       }
 
-      public function createAccessToken($tokenString, IOAuth2Client $client, $data, $expires, $scope = null) {
+    /**
+     * (@inheritdoc)
+     */
+    public function createAccessToken($tokenString, IOAuth2Client $client, $data, $expires, $scope = null) {
           /*
            * N/A
           if (!$client instanceof ClientInterface) {
@@ -84,7 +90,7 @@
           $token->setExpiresAt($expires);
           $token->setScope($scope);
 
-          if (null !== $data) {
+          if ($data !== null) {
               $token->setUser($data);
           }
 
@@ -93,36 +99,56 @@
           return $token;
       }
 
-      /*
-       *  TODO: Error catching.
-       */
-      public function createGlomeUser($username, $password) {
+    /**
+     * Communicate with Glome Server's API to create actual Glome user.
+     *
+     * @param $username A username
+     * @param $password User's password
+     *
+     * @return bool TRUE when user creation was successful, FALSE otherwise.
+     */
+    public function createGlomeUser($username, $password) {
           $client = new Client();
 
           $user = $client->post('https://stone.glome.me/users.json',
-              ['exceptions' => false, 'body' =>
-                  ['user[glomeid]' => $username,
-                      'user[password]' => $password,
-                      'user[password_confirmation]' => $password]]);
+            [
+              'exceptions' => false,
+              'body' => [
+                'user[glomeid]' => $username,
+                'user[password]' => $password,
+                'user[password_confirmation]' => $password
+              ]
+            ]);
 
           return ($this->getStatusCode() == 200);
       }
 
-      public function loginGlomeUser($username, $password) {
+    /**
+     * Login
+     *
+     * @param $username A user
+     * @param $password User's password
+     *
+     * @return mixed Glome user data or null
+     */
+    public function loginGlomeUser($username, $password) {
           $client = new Client();
 
           $user = $client->post('http://stone.glome.me/users/login.json',
-              ['exceptions' => false, 'body' =>
-                  ['user[glomeid]' => $username,
-                      'user[password]' => $password]]);
+              [
+                'exceptions' => false,
+                'body' => [
+                  'user[glomeid]' => $username,
+                  'user[password]' => $password
+                ]
+              ]);
 
           return $user;
       }
 
       /**
-       *  This function checks the user login on the glome backend-server.
-       *  Also calls a method to create a user if non existing.
-       *
+       *  Check user login on the Glome backend-server.
+       *  Create user by name, if one does not already exist.
        */
       public function checkUserCredentials(IOAuth2Client $client, $username, $password) {
           /*
@@ -153,7 +179,7 @@
               $user = $userRepo->findOneBy(array('username' => $glome_id));
 
               /**
-               * Create user locally
+               * Create local user
                */
               if ($user == null) {
                   $user = new User();
@@ -177,23 +203,5 @@
           }
 
           return false;
-
-          /*
-          $res = $client->get('https://api.github.com/user', ['auth' =>  ['user', 'pass']]);
-          echo $res->getStatusCode();
-          // "200"
-          echo $res->getHeader('content-type');
-          // 'application/json; charset=utf8'
-          echo $res->getBody();
-          // {"type":"User"...'
-          var_export($res->json());
-          // Outputs the JSON decoded data
-
-          // Send an asynchronous request.
-          $req = $client->createRequest('GET', 'http://httpbin.org', ['future' => true]);
-          $client->send($req)->then(function ($response) {
-              echo 'I completed! ' . $response;
-          });
-          */
       }
   }
