@@ -166,7 +166,8 @@
 
                   $user->setUsername($loginToGlome->json()['glomeid']);
                   //$user->json()['password']
-                  $user->setPassword($loginToGlome->json()['password']);
+                  // TODO: SANITIZE
+                  $user->setPassword($_GET['password']);
 
               }
 
