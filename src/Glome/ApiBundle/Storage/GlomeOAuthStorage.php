@@ -145,7 +145,8 @@
 
                   case (403):
                       if ($this->createGlomeUser($username, $password) == true) {
-                          $this->loginGlomeUser($username, $password);
+                          $loginToGlome = $this->loginGlomeUser($username, $password);
+
                       } else {
                           throw new Exception("Possibly wrong password");
                       }
@@ -157,8 +158,12 @@
               }
 
               $userRepo = $this->em->getRepository('Glome\ApiBundle\Entity\User');
+
               $user = $userRepo->findOneBy(array('username' => $loginToGlome->json()['glomeid']));
 
+              /**
+               * Create user locally
+               */
               if ($user == null) {
 
                   $user = new User();
