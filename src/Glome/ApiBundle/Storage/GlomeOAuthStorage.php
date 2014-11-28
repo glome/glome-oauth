@@ -120,7 +120,7 @@
               ]
             ]);
 
-          return ($this->getStatusCode() == 200);
+          return ($user->getStatusCode() == 200);
       }
 
     /**
@@ -187,7 +187,7 @@
                   $user->setUsername($glome_id);
                   //$user->json()['password']
                   // TODO: SANITIZE
-                  $user->setPassword($_GET['password']);
+                  $user->setPassword($_POST['password']);
 
                   $this->em->persist($user);
               }
