@@ -107,20 +107,24 @@
      *
      * @return bool TRUE when user creation was successful, FALSE otherwise.
      */
-    public function createGlomeUser($username, $password) {
+    public function createGlomeUser($username = null, $password = null) {
           $client = new Client();
 
           $user = $client->post('https://stone.glome.me/users.json',
             [
               'exceptions' => false,
+
               'body' => [
                 'user[glomeid]' => $username,
                 'user[password]' => $password,
                 'user[password_confirmation]' => $password
               ]
-            ]);
 
-          return ($user->getStatusCode() == 200);
+            ]);
+        if ($user->getStatusCode() != 201) {
+            throw new \Exception($user);
+        }
+        return ($user->json_decode());
       }
 
     /**
@@ -131,7 +135,7 @@
      *
      * @return mixed Glome user data or null
      */
-    public function loginGlomeUser($username, $password) {
+    public function loginGlomeUser($username, $password = null) {
           $client = new Client();
 
           $user = $client->post('http://stone.glome.me/users/login.json',
@@ -150,7 +154,13 @@
        *  Check user login on the Glome backend-server.
        *  Create user by name, if one does not already exist.
        */
-      public function checkUserCredentials(IOAuth2Client $client, $username, $password) {
+      public function checkUserCredentials(IOAuth2Client $client, $username = null, $password = null) {
+          // Check if new user
+          if ($username == null) {
+              $response = $this->createGlomeUser();
+              $username = $response['glomeid'];
+          }
+
           /*
            * Try to login Glome Backend server with credentials
            */
@@ -162,11 +172,14 @@
                       break;
 
                   case (403):
+                      throw new Exception("Possibly wrong username or password");
+                      /*
                       if ($this->createGlomeUser($username, $password) == true) {
                           $loginToGlome = $this->loginGlomeUser($username, $password);
                       } else {
                           throw new Exception("Possibly wrong password");
                       }
+                      */
                       break;
 
                   default:
@@ -174,13 +187,13 @@
                       break;
               }
 
+              /**
+               * Create local user
+               */
               $userRepo = $this->em->getRepository('Glome\ApiBundle\Entity\User');
               $glome_id = $loginToGlome->json()['glomeid'];
               $user = $userRepo->findOneBy(array('username' => $glome_id));
 
-              /**
-               * Create local user
-               */
               if ($user == null) {
                   $user = new User();
 

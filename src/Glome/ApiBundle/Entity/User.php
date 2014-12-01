@@ -18,12 +18,12 @@ class User implements UserInterface, \Serializable
   private $id;
 
   /**
-  * @ORM\Column(type="string", length=25, unique=true)
+  * @ORM\Column(type="string", length=255, unique=true)
   */
   private $username;
 
   /**
-  * @ORM\Column(type="string", length=25, unique=true)
+  * @ORM\Column(type="string", length=255, unique=true)
   */
   private $email;
 
@@ -33,7 +33,7 @@ class User implements UserInterface, \Serializable
   private $salt;
 
   /**
-  * @ORM\Column(type="string", length=40)
+  * @ORM\Column(type="string", length=255, nullable=true)
   */
   private $password;
 

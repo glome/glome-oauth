@@ -224,9 +224,10 @@ class GlomeOAuth2 extends OAuth2{
         }
 
         // TODO: Documentation
-        $stored = $this->storage->checkUserCredentials($client, $input["username"], $input["password"]);
-
-        if ($stored === FALSE) {
+        $stored = null;
+        try {
+            $stored = $this->storage->checkUserCredentials($client, $input["username"], $input["password"]);
+        } catch (\Exception $e) {
             throw new OAuth2ServerException(self::HTTP_BAD_REQUEST, self::ERROR_INVALID_GRANT);
         }
 
