@@ -110,16 +110,27 @@
     public function createGlomeUser($username = null, $password = null) {
           $client = new Client();
 
+          $user_data = [];
+          if ($username != null) {
+              $user_data['user[glomeid]'] = $username;
+          }
+          if ($password != null) {
+              $user_data['user[password]'] = $password;
+              $user_data['user[password_confirmation]'] = $password;
+          }
+
           $user = $client->post('https://stone.glome.me/users.json',
             [
               'exceptions' => false,
 
+              /*
               'body' => [
                 'user[glomeid]' => $username,
                 'user[password]' => $password,
                 'user[password_confirmation]' => $password
               ]
-
+              */
+              'body' = $user_data,
             ]);
         if ($user->getStatusCode() != 201) {
             throw new \Exception($user);
