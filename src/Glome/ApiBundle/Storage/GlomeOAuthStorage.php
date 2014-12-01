@@ -118,6 +118,8 @@
               $user_data['user[password]'] = $password;
               $user_data['user[password_confirmation]'] = $password;
           }
+        $user_data['application[uid]'] = "stone.glome.me";
+        $user_data['application[apikey]'] = "c8ce221f85eb4eb70f8345aa0efbe3f5";
 
           $user = $client->post('https://stone.glome.me/users.json',
             [
@@ -130,12 +132,16 @@
                 'user[password_confirmation]' => $password
               ]
               */
-              'body' = $user_data,
+              'body' => $user_data,
             ]);
-        if ($user->getStatusCode() != 201) {
-            throw new \Exception($user);
+        switch($user->getStatusCode()) {
+            case 200:
+            case 201:
+                break;
+            default:
+                throw new \Exception($user);
         }
-        return ($user->json_decode());
+        return ($user->json());
       }
 
     /**
@@ -211,7 +217,7 @@
                   $user->setUsername($glome_id);
                   //$user->json()['password']
                   // TODO: SANITIZE
-                  $user->setPassword($_POST['password']);
+                  //$user->setPassword($_POST['password']);
 
                   $this->em->persist($user);
               }
